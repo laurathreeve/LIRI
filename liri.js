@@ -95,10 +95,11 @@ function runSpotify(){
       return console.log('Error occurred: ' + err);
     }
     else {
+      //console.log(data.tracks.items[0].name);
       var spotData = [
-      "Artist: " + data.items[0].artists.name,
-      "Song Name: " + data.tracks.items[0].track.name,
-      "Album:  " + data.tracks.items[0].album,
+      "Artist: " + data.tracks.items[0].album.artists[0].name,
+      "Song Name: " + data.tracks.items[0].name,
+      "Album:  " + data.tracks.items[0].album.name,
   ].join("\n\n");
   console.log(spotData);
   //console.log(JSON.stringify(data, null, 2)); 

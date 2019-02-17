@@ -1,10 +1,11 @@
-//require("dotenv").config();
+require("dotenv").config();
 var axios = require("axios")
 var moment = require("moment");
 var keys = require("./keys.js");
 var fs = require("fs");
+var Spotify = require("node-spotify-api");
 
-var spotify = new Spotify(keys.spotify)
+var spotify = new Spotify(keys.spotify);
 
 //do if statements to match what you're trying to take in 
 
@@ -38,10 +39,11 @@ function runBands() {
             var bandsInfo = response.data;
             //console.log(bandsInfo);
             var concertInfo = [
-                "Venue Name: " + bandsInfo.venue.name,
-                "Venue City: " + bandsInfo.venue.city,
-                "Concert Date and Time: " + bandsInfo.datetime,
+                "Venue Name: " + bandsInfo[0].venue.name,
+                "Venue City: " + bandsInfo[0].venue.city,
+                "Concert Date and Time: " + bandsInfo[0].datetime,
             ].join("\n\n");
+            console.log(concertInfo);
             
         })
 }
@@ -60,24 +62,47 @@ function randomize(){
       });
 }
 
-/*function runSpotify(){
-    var URL= "https://api.spotify.com/v1/tracks/7yCPwWs66K8Ba5lFuU2bcx";
-    axios
-    .request(URL)
-    .then(function(data) {
-      console.log(data); 
-    })
-    ajax
-        id: f91243d9864c4b95b25b944a0d851e23,
-        secret:ad6cbff8bffb4a5f98828f80b8028963
-      });
-       
-      spotify
-        .search({ type: 'track', query: 'All the Small Things' })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
-}*/
+// OMDB 
+ function runOMDB() {
+  //findMovie takes in name of movie and searches the OMDB API
+ // this.findMovie = function () {
+      var URL = "http://www.omdbapi.com/?t=" + term + "&y=&plot=short&apikey=trilogy";
+      //run the request with axios module on a URL with a JSON
+      axios.get(URL).then(function (response) {
+          //place response.data into a variable jsonData
+          var jsonData = response.data;
+          //movieData = the string containing the movie data we will print to console
+          var movieData = [
+              "Title:" + jsonData.Title,
+              "Year of release:" + jsonData.Year,
+              "IMDB rating: " + jsonData.imdbRating,
+              "Rotten Tomatoes rating: " + jsonData.Ratings[1].Source,
+              "Country where produced: " + jsonData.Country,
+              "Language: " + jsonData.Language,
+              "Plot: " + jsonData.Plot,
+              "Cast: " + jsonData.Actors
+          ].join("\n\n");
+          //print movieData to console
+          console.log(movieData)
+      }
+      );
+  }
+//}
+
+function runSpotify(){
+  spotify.search({ type: 'track', query: term }, function(err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+    else {
+      var spotData = [
+      "Artist: " + data.items[0].artists.name,
+      "Song Name: " + data.tracks.items[0].track.name,
+      "Album:  " + data.tracks.items[0].album,
+  ].join("\n\n");
+  console.log(spotData);
+  //console.log(JSON.stringify(data, null, 2)); 
+}
+  });
+  
+}
